@@ -372,3 +372,4 @@ class XNetwork(object):
         session.close()
 
         raise TimeoutError("Failed to download the file!")
+    
