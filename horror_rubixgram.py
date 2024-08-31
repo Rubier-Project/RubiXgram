@@ -334,7 +334,7 @@ class TextMarkdown(object):
 
 class Client(object):
 
-    __version__ = "3.7.3"
+    __version__ = "3.7.4"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -1670,7 +1670,7 @@ class Client(object):
 
 class AsyncClient(object):
 
-    __version__ = "3.7.3"
+    __version__ = "3.7.4"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -1814,11 +1814,11 @@ class AsyncClient(object):
     async def onMessage(self):
         yield XUpdater(self.authtoken, self.privatekey, self.getChatsUpdates(), self.ufa, self.proxy)
 
-    async def onPlusMessage(self):
-        async def decorator(func):
+    def onPlusMessage(self):
+        def decorator(func):
             self.handlers.append(func)
-            return await func
-        return await decorator
+            return func
+        return decorator
     
     async def polling(self):
         msgd = []
