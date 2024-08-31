@@ -12,7 +12,7 @@ In fact when you import the ClientMessenger class or
             `UseFakeUserAgent` Parameter with boolean types, also you can use Proxy, on the `Proxy` Parameter to set your proxies and have a better connection
         
 
-Make Sure you use the latest version of QiRub, for
+Make Sure you use the latest version of Rubixgram, for
 More info you can visit our github, also you can access
 To new News, Updates, Bug Fixes, ... with github
 
