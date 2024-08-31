@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'RubiXgram',         # How you named your package folder (MyLib)
   packages = ['RubiXgram'],   # Chose the same as "name"
-  version = '1.0.0',      # Start with a small number and increase it with every change you make
+  version = '3.7.3',      # Start with a small number and increase it with every change you make
   license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'Rubika Asynchronous/Synchronous Client Library ',   # Give a short description about your library
   author = 'Host1let',                   # Type in your name
