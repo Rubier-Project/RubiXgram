@@ -64,7 +64,6 @@ class XNetwork(object):
         self.onNet = httpx.Client()
         self.onAsyncNet = httpx.AsyncClient()
         self.http = ProxyManager(self.proxy) if self.proxy else PoolManager()
-        self.httpAsync = aiohttp.ClientSession()
     
     def checkLink(self, link: str):
         if link.startswith("http://") or link.startswith("https://"):
@@ -140,9 +139,10 @@ class XNetwork(object):
 
         net = self.onAsyncNet
         onresp = await net.post(self.selectedApi, data=notData, headers=heads)
+        text = onresp.text
 
         try:
-            data = json.loads(self.enc.decrypt(json.loads(onresp.text)['data_enc']))
+            data = json.loads(self.enc.decrypt(json.loads(text)['data_enc']))
             return data
         except Exception as ERROR_X:
             return str(ERROR_X)
@@ -252,6 +252,8 @@ class XNetwork(object):
                     return json.loads(response.text)
                 except Exception:
                     print(f"\nError uploading file! (Attempt {attempt + 1}/{maxAttempts})")
+
+            response.close()
             
             print("\nFailed to upload the file!")
 
@@ -361,9 +363,12 @@ class XNetwork(object):
                             data.extend(chunk)
                             if len(data) >= size:
                                 return bytes(data)
+                            
                 except Exception:
                     attempt += 1
                     print(f"\nError downloading file! (Attempt {attempt}/{maxAttempts})")
                     continue
+
+        session.close()
 
         raise TimeoutError("Failed to download the file!")

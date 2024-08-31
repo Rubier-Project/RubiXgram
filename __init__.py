@@ -1,1 +1,1 @@
-from .main import Client, ReactionsIds, FormattingOptions, XNetwork, XUpdater, Parse
+from .main import Client, AsyncClient, AsyncTaskCreator, ReactionsIds, FormattingOptions, XNetwork, XUpdater, Parse

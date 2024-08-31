@@ -10,10 +10,12 @@ Supporters: @Off_coder - @StreamX
 from .network import XNetwork
 from .updater import XUpdater
 from .DataParse import Parse
+from .bootloader import *
 from mutagen import mp3, File
 from tempfile import NamedTemporaryFile
 from PIL import Image, ImageFilter
 from bs4 import BeautifulSoup
+from asyncio import run, create_task
 import re
 import time
 import json
@@ -3119,3 +3121,13 @@ class RubixToolKit(object):
 
         result = [inData(m) for m in googledata.search(music_name,num_results=5)]
         return OnMusic(result)
+    
+class AsyncTaskCreator(object):
+    def __init__(self):pass
+
+    def createTask(self, function):
+        async def some():
+            task = create_task(function())
+            await task
+
+        run(some())
