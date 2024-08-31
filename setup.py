@@ -1,7 +1,7 @@
 from distutils.core import setup
 setup(
-  name = 'rubixgram',         # How you named your package folder (MyLib)
-  packages = ['rubixgram'],   # Chose the same as "name"
+  name = 'rubixgram_client',         # How you named your package folder (MyLib)
+  packages = ['rubixgram_client'],   # Chose the same as "name"
   version = '1.0.0',      # Start with a small number and increase it with every change you make
   license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'Rubika Asynchronous/Synchronous Client Library ',   # Give a short description about your library
