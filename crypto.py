@@ -1,18 +1,22 @@
 """
-This Source is part of QiRub Project
+Rubika Asynchronous/Synchronous Client Library 
 
-Make Sure you use the latest version of QiRub, for
-More info you can visit our github, also you can access
-To new News, Updates, Bug Fixes, ... with github
-
-Github: https://github.com/Rubier-Project/QiRub
-
+Github: https://github.com/Rubier-Project/RubiXgram
+Rubika Channel: @RubixGram1
+Dev: @StreamX
+Supporters: @Off_coder - @StreamX
 """
 
-import base64,Crypto.Util.Padding,Crypto.Hash
-from Crypto.Cipher import AES
-from Crypto.Signature import pkcs1_15
-from Crypto.PublicKey import RSA 
+try:
+      import base64,Crypto.Util.Padding,Crypto.Hash
+      from Crypto.Cipher import AES
+      from Crypto.Signature import pkcs1_15
+      from Crypto.PublicKey import RSA
+except:
+     import base64,crypto.Util.Padding,crypto.Hash
+     from crypto.Cipher import AES
+     from crypto.Signature import pkcs1_15
+     from crypto.PublicKey import RSA
 
 class encryption:
   def __init__(self, auth:str, private_key:str=None):

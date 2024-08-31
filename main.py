@@ -1,12 +1,14 @@
 """
-
 Rubika Asynchronous/Synchronous Client Library 
 
 Github: https://github.com/Rubier-Project/RubiXgram
+Rubika Channel: @RubixGram1
+Dev: @StreamX
+Supporters: @Off_coder - @StreamX
 """
 
-from .network import QiNetwork
-from .updater import QiUpdater
+from .network import XNetwork
+from .updater import XUpdater
 from .DataParse import Parse
 from mutagen import mp3, File
 from tempfile import NamedTemporaryFile
@@ -329,8 +331,8 @@ class Markdown(object):
 
 class ClientMessenger(object):
 
-    __version__ = "2.167.9"
-    __github__ = "https://github.com/Rubier-Project/QiRub"
+    __version__ = "1.0.0"
+    __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
         self.authtoken = AuthToken
@@ -339,11 +341,11 @@ class ClientMessenger(object):
         self.ufa = UseFakeUserAgent
         self.proxy = Proxy
         
-        self.network = QiNetwork(self.authtoken, self.privatekey, Proxy)
+        self.network = XNetwork(self.authtoken, self.privatekey, Proxy)
         self.handlers = []
     
     def __str__(self):
-        return f"<QiRub {self.__github__} - {self.__version__}>"
+        return f"<RubiXgram {self.__github__} - {self.__version__}>"
     
     @property
     def accountInfo(self) -> dict:
@@ -465,9 +467,9 @@ class ClientMessenger(object):
             if audio and "artist" in audio:
                 return audio["artist"][0]
             
-            return "qirubika"
+            return "rubix"
         except Exception:
-            return "qirubika"
+            return "rubix"
         
     def getFileName(self, fname: str):
         if "/" in fname:
@@ -487,7 +489,7 @@ class ClientMessenger(object):
         return self.network.option({"start_id": None}, "getChats", self.ufa)
 
     def onMessage(self):
-        yield QiUpdater(self.authtoken, self.privatekey, self.getChatsUpdates(), self.ufa, self.proxy)
+        yield XUpdater(self.authtoken, self.privatekey, self.getChatsUpdates(), self.ufa, self.proxy)
 
     def onPlusMessage(self):
         def decorator(func):
@@ -499,7 +501,7 @@ class ClientMessenger(object):
         msgd = []
         while 1:
             for handler in self.handlers:
-                data = QiUpdater(self.authtoken, self.privatekey, self.getChatsUpdates(), self.ufa, self.proxy)
+                data = XUpdater(self.authtoken, self.privatekey, self.getChatsUpdates(), self.ufa, self.proxy)
                 if not data.messageId in msgd:
                     msgd.append(data.messageId)
                     handler(data)
@@ -1099,7 +1101,7 @@ class ClientMessenger(object):
             database['file_name'] = image.split("/")[-1]
         
         else:
-            database['file_name'] = "qirubika.jpg"
+            database['file_name'] = "rubixImage.jpg"
 
         uploaded = self.network.upload(image, database["file_name"], os.path.getsize(image))
 

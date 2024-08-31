@@ -1,15 +1,15 @@
 from distutils.core import setup
 setup(
-  name = 'QiRub',         # How you named your package folder (MyLib)
-  packages = ['QiRub'],   # Chose the same as "name"
-  version = '2.167.9',      # Start with a small number and increase it with every change you make
+  name = 'rubixgram',         # How you named your package folder (MyLib)
+  packages = ['rubixgram'],   # Chose the same as "name"
+  version = '1.0.0',      # Start with a small number and increase it with every change you make
   license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
-  description = 'Rubka Client Library',   # Give a short description about your library
+  description = 'Rubika Asynchronous/Synchronous Client Library ',   # Give a short description about your library
   author = 'Host1let',                   # Type in your name
   author_email = 'sqlmapssh@gmail.com',      # Type in your E-Mail
-  url = 'https://github.com/Rubier-Project/QiRub',   # Provide either the link to your github or to your website
-  download_url = 'https://github.com/Rubier-Project/QiRub/archive/refs/heads/main.zip',    # I explain this later on
-  keywords = ['qirubika'],   # Keywords that define your package best
+  url = 'https://github.com/Rubier-Project/RubiXgram',   # Provide either the link to your github or to your website
+  download_url = 'https://github.com/Rubier-Project/RubiXgram/archive/refs/heads/main.zip',    # I explain this later on
+  keywords = ['rubx'],   # Keywords that define your package best
   install_requires=[            # I get to this in a second
           "httpx",
           "pycryptodome",

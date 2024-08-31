@@ -1,12 +1,10 @@
 """
-This Source is part of QiRub Project
+Rubika Asynchronous/Synchronous Client Library 
 
-Make Sure you use the latest version of QiRub, for
-More info you can visit our github, also you can access
-To new News, Updates, Bug Fixes, ... with github
-
-Github: https://github.com/Rubier-Project/QiRub
-
+Github: https://github.com/Rubier-Project/RubiXgram
+Rubika Channel: @RubixGram1
+Dev: @StreamX
+Supporters: @Off_coder - @StreamX
 """
 
 import httpx
@@ -22,7 +20,7 @@ from .crypto import encryption
 class ProxyType(object):
     ...
 
-class QiStream(object):
+class XStream(object):
     def choiceObject(items: list = []):
         return random.choice(items)
     
@@ -35,7 +33,7 @@ class QiStream(object):
     def deviceHashGenerator() -> str:
         return "".join(random.choices("0123456789", k=26))
 
-class QiNetwork(object):
+class XNetwork(object):
     def __init__(self, AuthToken: str, PrivateKey: str, Proxy: ProxyType = None):
         self.auth = AuthToken
         self.key = PrivateKey
@@ -60,7 +58,7 @@ class QiNetwork(object):
             "https://messengerg2c3.iranlms.ir"
         ]
 
-        self.selectedApi = QiStream.choiceObject(self.apis)
+        self.selectedApi = XStream.choiceObject(self.apis)
 
         self.http = ProxyManager(self.proxy) if self.proxy else PoolManager()
     
@@ -72,10 +70,10 @@ class QiNetwork(object):
     
     def getMimeFromByte(self, bytes: bytes):
         mime = filetype.guess(bytes)
-        return "qirubika" if mime is None else mime.extension
+        return "rubix" if mime is None else mime.extension
     
     def generateFileName(self, mime: str):
-        return "QiRubika_{}.{}".format(random.randint(1, 100000), mime)
+        return "RubiXgram_{}.{}".format(random.randint(1, 100000), mime)
     
     def getFileName(self, path: str):
         return wget.filename_from_url(path)
@@ -109,8 +107,8 @@ class QiNetwork(object):
         try:
             data = json.loads(self.enc.decrypt(json.loads(net.post(self.selectedApi, data=notData, headers=heads).text)['data_enc']))
             return data
-        except Exception as ERROR_QI:
-            return str(ERROR_QI)
+        except Exception as ERROR_X:
+            return str(ERROR_X)
         
     def RequestSendFile(self, file_name: str, mime: str, size: str):
         return self.option({"file_name": file_name, "mime": mime, "size": size}, "requestSendFile", True)

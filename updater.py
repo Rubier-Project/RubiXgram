@@ -1,4 +1,4 @@
-from .network import QiNetwork
+from .network import XNetwork
 import random
 import json
 import re
@@ -120,10 +120,10 @@ class Markdown(object):
 
 class ReplyObjects(object):
     def __init__(self, jsres: dict = {}):
-        self.jsres = jsres
+        self.data = jsres
 
     def __str__(self) -> dict:
-        return json.dumps(self.jsres, indent=2)
+        return json.dumps(self.data, indent=2)
 
     @property
     def messageId(self) -> str:
@@ -155,14 +155,14 @@ class ReplyObjects(object):
     def isReply(self) -> bool:
         return self.jsres['is_reply']
 
-class QiUpdater(object):
+class XUpdater(object):
     def __init__(self, Auth, Key, UpdateResult, UseFakeUserAgent: bool = True, Proxy = None) -> None:
         self.auth = str(Auth)
         self.key = str(Key)
         self.UpResult = UpdateResult
         self.ufa = UseFakeUserAgent
         self.proxy = Proxy
-        self.networkClient = QiNetwork(self.auth, self.key, self.proxy)
+        self.networkClient = XNetwork(self.auth, self.key, self.proxy)
 
     def __str__(self):
         return json.dumps(self.UpResult, indent=2)
