@@ -334,7 +334,7 @@ class TextMarkdown(object):
 
 class Client(object):
 
-    __version__ = "1.0.0"
+    __version__ = "3.7.3"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -1670,7 +1670,7 @@ class Client(object):
 
 class AsyncClient(object):
 
-    __version__ = "1.0.0"
+    __version__ = "3.7.3"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
