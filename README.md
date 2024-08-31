@@ -1,10 +1,10 @@
-# QiRub
+# RubiXgram
 Client for Rubika Messenger
 
 # Explain
 
-QiRub is a Project for Rubika Client Handler
-+ QiRub includes ( 'httpx', 'pycryptodome', 'fake_useragent', 'rich', 'mutagen' )
+RubiXgram is a Project for Rubika Client Handler
++ RubiXgram includes ( 'httpx', 'pycryptodome', 'fake_useragent', 'rich', 'mutagen' )
 
 In fact when you import the ClientMessenger class or
     run the source what called ClientMessenger class, its automatically set a
@@ -18,39 +18,6 @@ To new News, Updates, Bug Fixes, ... with github
 
 # Installation
 + for python:
-      `pip install QiRub`
+      `pip install ruibxgram`
 + by git:
-      `git clone https://github.com/Rubier-Project/QiRub`
-
-# Usage
-### import
-```python
-from QiRub import ClientMessenger
-
-app = ClientMessenger("AUTH", "KEY")
-```
-
-### account information
-```python
-from QiRub import ClientMessenger
-
-app = ClientMessenger("AUTH", "KEY")
-
-print(app.accountInfo) # you can use getMe method too
-```
-### print colorize data
-```python
-from QiRub import ClientMessenger, Parse
-
-app = ClientMessenger("AUTH", "KEY")
-parse = Parse()
-
-data = app.getMe()
-parse.JsonRichParse(data)
-```
-
-# Update 1.1.0
-+ Added Method `onAutoMessage`
-+ Added Method `downloadSomething`
-+ Added Method `getChatInfo`
-+ Added New Module `urllib3`
+      `git clone https://github.com/Rubier-Project/RubiXgram`

@@ -1,1 +1,1 @@
-from .main import ClientMessenger, ReactionsIds, FormattingOptions, QiNetwork, QiUpdater, Parse
+from .main import Client, ReactionsIds, FormattingOptions, XNetwork, XUpdater, Parse
