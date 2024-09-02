@@ -1812,7 +1812,7 @@ class AsyncClient(object):
         return await self.network.asyncOption({"start_id": None}, "getChats", self.ufa)
 
     async def onMessage(self):
-        yield XUpdater(self.authtoken, self.privatekey, self.getChatsUpdates(), self.ufa, self.proxy)
+        yield XUpdater(self.authtoken, self.privatekey, await self.getChatsUpdates(), self.ufa, self.proxy)
 
     def onPlusMessage(self):
         def decorator(func):

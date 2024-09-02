@@ -2,6 +2,11 @@ from .network import XNetwork
 import random
 import json
 import re
+from typing import Union, Dict
+
+class UNKNOWN(object):
+    def __str__(self) -> str:
+        return "UNKNOWN"
 
 class Markdown(object):
     def __init__(self, text: str) -> None:
@@ -117,45 +122,248 @@ class Markdown(object):
             result['metadata'] = {'meta_data_parts': meta_data_parts}
 
         return result
+    
+class ForwardedFrom(object):
+    def __init__(self, forward_result: dict = {}):
+        self.forward_result = forward_result
+        self.keys: list = list(self.forward_result.keys())
+        self.type_from: Union[str, UNKNOWN] = self.forward_result['type_from'] if "type_from" in self.keys else UNKNOWN
+        self.message_id: Union[str, UNKNOWN] = self.forward_result['message_id'] if "message_id" in self.keys else UNKNOWN
+        self.object_guid: Union[str, UNKNOWN] = self.forward_result['object_guid'] if "object_guid" in self.keys else UNKNOWN
+
+    def __str__(self) -> dict:
+        return json.dumps(self.forward_result, indent=2)
+
+class FileInlineTypes(object):
+    def __init__(self) -> None:
+        self.IMAGE = "Image"
+        self.MUSIC = "Music"
+        self.VIDEO = "Video"
+        self.VIDEO_MESSAGE = "Video",
+        self.VOICE = "Voice"
+        self.GIF = "Gif"
+        self.FILE = "File"
+
+    def __str__(self) -> str:
+        return json.dumps({
+            "IMAGE": self.IMAGE,
+            "MUSIC": self.MUSIC,
+            "GIF": self.GIF,
+            "FILE": self.FILE,
+            "VOICE": self.VOICE,
+            "VIDEO": self.VIDEO,
+            "VIDEO_MESSAGE": self.VIDEO_MESSAGE
+        }, indent=2)
+
+class FileInline(object):
+    def __init__(self, file_inline_result: dict = {}):
+        self.file = file_inline_result
+        self.keys: list = list(self.file.keys())
+        self.id: Union[int, UNKNOWN] = self.file['file_id'] if "file_id" in self.keys else UNKNOWN
+        self.mime: Union[str, UNKNOWN] = self.file['mime'] if "mime" in self.keys else UNKNOWN
+        self.dc_id: Union[int, UNKNOWN] = self.file['dc_id'] if "dc_id" in self.keys else UNKNOWN
+        self.access_hash_rec: Union[str, UNKNOWN] = self.file['access_hash_rec'] if "access_hash_rec" in self.keys else UNKNOWN
+        self.name: Union[str, UNKNOWN] = self.file['file_name'] if "file_name" in self.keys else UNKNOWN
+        self.thumb_inline: Union[str, UNKNOWN] = self.file['thumb_inline'] if "thumb_inline" in self.keys else UNKNOWN
+        self.width: Union[int, UNKNOWN] = self.file['width'] if "width" in self.keys else UNKNOWN
+        self.height: Union[int, UNKNOWN] = self.file['height'] if "height" in self.keys else UNKNOWN
+        self.time: Union[int, UNKNOWN] = self.file['time'] if "time" in self.keys else UNKNOWN
+        self.size: Union[int, UNKNOWN] = self.file['size'] if "size" in self.size else UNKNOWN
+        self.type: Union[str, UNKNOWN] = self.file['type'] if "type" in self.keys else UNKNOWN
+        self.is_round: Union[bool, UNKNOWN] = self.file['is_round'] if "is_round" in self.keys else UNKNOWN
+        self.is_spoil: Union[bool, UNKNOWN] = self.file['is_spoil'] if "is_spoil" in self.keys else UNKNOWN
+
+    def __str__(self) -> str:
+        return json.dumps(self.file, indent=2)
+    
+class FileInlineMusic(FileInline):
+    def __init__(self, file_inline_result: Dict = {}):
+        super().__init__(file_inline_result)
+        self.music_performer: Union[str, UNKNOWN] = self.file['music_performer'] if "music_performer" in self.keys else UNKNOWN
+        del self.thumb_inline
+
+class FileInlineVoice(FileInline):
+    def __init__(self, file_inline_result: Dict = {}):
+        super().__init__(file_inline_result)
+        del self.thumb_inline
+
+class FileInlineFile(FileInline):
+    def __init__(self, file_inline_result: Dict = {}):
+        super().__init__(file_inline_result)
+        del self.thumb_inline
+
+class FileInlineGif(FileInline):
+    def __init__(self, file_inline_result: Dict = {}):
+        super().__init__(file_inline_result)
+
+class FileInlineImage(FileInline):
+    def __init__(self, file_inline_result: Dict = {}):
+        super().__init__(file_inline_result)
+
+class FileInlineVideo(FileInline):
+    def __init__(self, file_inline_result: Dict = {}):
+        super().__init__(file_inline_result)
+
+class FileInlineVideoMessage(FileInline):
+    def __init__(self, file_inline_result: Dict = {}):
+        super().__init__(file_inline_result)
+
+class MapView(object):
+    def __init__(self, map_view: dict):
+        self.map = map_view
+        self.keys: list = list(self.map.keys())
+        self.tile_side_count: Union[int, UNKNOWN] = self.map['tile_side_count'] if "tile_side_count" in self.keys else UNKNOWN
+        self.tile_urls: Union[list, UNKNOWN] = self.map['tile_urls'] if "tile_urls" in self.keys else UNKNOWN
+        self.x_loc: Union[float, UNKNOWN] = self.map['x_loc'] if "x_loc" in self.keys else UNKNOWN
+        self.y_loc: Union[float, UNKNOWN] = self.map['y_loc'] if "y_loc" in self.keys else UNKNOWN
+
+    def __str__(self) -> str:
+        return json.dumps(self.map, indent=2)
+
+class Location(object):
+    def __init__(self, location_result: dict):
+        self.location = location_result
+        self.keys: list = list(self.location.keys())
+        self.longitude: Union[float, UNKNOWN] = self.location['longitude'] if "longitude" in self.keys else UNKNOWN
+        self.latitude: Union[float, UNKNOWN] = self.location['latitude'] if "latitude" in self.keys else UNKNOWN
+        self.map_view: Union[MapView, UNKNOWN] = MapView(self.location['map_view']) if "map_view" in self.keys else UNKNOWN
+
+    def __str__(self) -> str:
+        return json.dumps(self.location, indent=2)
+
+class Contact(object):
+    def __init__(self, contact_result: dict) -> None:
+        self.contact = contact_result
+        self.keys: list = list(self.contact.keys())
+        self.phone_number: Union[str] = self.contact['phone_number']
+        self.first_name: Union[str] = self.contact['first_name']
+        self.last_name: Union[str] = self.contact['last_name']
+        self.user_guid: Union[str] = self.contact['user_guid']
+        self.vcard: Union[str] = self.contact['vcard']
+
+    def __str__(self) -> str:
+        return json.dumps(self.contact, indent=2)
 
 class ReplyObjects(object):
     def __init__(self, jsres: dict = {}):
-        self.data = jsres
+        self.jsres = jsres
+        self.keys: list = list(self.jsres.keys())
+        self.file_types = FileInlineTypes()
+        self.message_id: Union[str] = self.jsres['message_id'] if 'message_id' in self.keys else ""
+        self.text: Union[str] = self.jsres['text'] if "text" in self.keys else ""
+        self.reply_to_message_id: Union[str] = self.jsres['reply_to_message_id'] if "reply_to_message_id" in self.keys else ""
+        self.message_time: Union[str, UNKNOWN] = self.jsres['time'] if "time" in self.keys else UNKNOWN
+        self.type: Union[str, UNKNOWN] = self.jsres['type'] if "type" in self.keys else UNKNOWN
+        self.author_type: Union[str, UNKNOWN] = self.jsres['author_type'] if "author_type" in self.keys else UNKNOWN
+        self.is_allow_transcription: Union[bool, UNKNOWN] = self.jsres['allow_transcription'] if "allow_transcription" in self.keys else UNKNOWN
+        self.is_edited: Union[bool, UNKNOWN] = self.jsres['is_edited'] if "is_edited" in self.keys else UNKNOWN
+        self.is_reply: Union[bool] = self.jsres['is_reply'] if "is_reply" in self.keys else ""
+        self.location: Union[Location, UNKNOWN] = Location(self.chat_result['location']) if "location" in self.keys else UNKNOWN
+        self.file_inline: Union[
+            FileInlineImage, FileInlineGif,
+            FileInlineFile, FileInlineMusic,
+            FileInlineVoice, FileInlineVideo,
+            FileInlineVideoMessage, UNKNOWN
+        ] = UNKNOWN if not "file_inline" in self.keys else FileInlineImage(self.jsres['file_inline']) if self.type == self.file_types.IMAGE else FileInlineGif(self.jsres['file_inline']) if self.type == self.file_types.GIF else \
+            FileInlineFile(self.jsres['file_inline']) if self.type == self.file_types.FILE else FileInlineMusic(self.jsres['file_inline']) if self.type == self.file_types.MUSIC else FileInlineVoice(self.jsres['file_inline']) if self.type == self.file_types.VOICE \
+            else FileInlineVideo(self.jsres['file_inline']) if self.type in ( self.file_types.VIDEO, self.file_types.VIDEO_MESSAGE ) else UNKNOWN
 
-    def __str__(self) -> dict:
+    def __str__(self) -> str:
+        return json.dumps(self.jsres, indent=2)
+
+class Avatar(object):
+    def __init__(self, avatar_result: dict = {}):
+        self.data: Dict = avatar_result
+        self.keys = self.data.keys()
+        self.id: Union[str, UNKNOWN] = self.data['file_id'] if "file_id" in self.keys else UNKNOWN
+        self.mime: Union[str, UNKNOWN] = self.data['mime'] if "mime" in self.keys else UNKNOWN
+        self.dc_id: Union[str, UNKNOWN] = self.data['dc_id'] if "dc_id" in self.keys else UNKNOWN
+        self.access_hash_rec: Union[str, UNKNOWN] = self.data['access_hash_rec'] if "access_hash_rec" in self.keys else UNKNOWN
+
+    def __str__(self) -> str:
         return json.dumps(self.data, indent=2)
 
-    @property
-    def messageId(self) -> str:
-        return self.jsres['message_id'] if 'message_id' in self.jsres.keys() else "null"
-    
-    @property
-    def text(self) -> str:
-        return self.jsres['text'] if 'text' in self.jsres.keys() else "null"
-    
-    @property
-    def reply_to_message_id(self) -> str:
-        return self.jsres['reply_to_message_id'] if 'reply_to_message_id' in self.jsres.keys() else "null"
-    
-    def messageTime(self) -> str:
-        return self.jsres['time'] if 'time' in self.jsres.keys() else "null"
-    
-    def getType(self) -> str: 
-        return self.jsres['type'] if 'type' in self.jsres.keys() else "null"
-    
-    def getAuthorType(self) -> str:
-        return self.jsres['author_type'] if 'author_type' in self.jsres.keys() else "null"
-    
-    def isAllowTranscription(self) -> bool:
-        return self.jsres['allow_transcription'] if 'allow_transcription' in self.jsres.keys() else "null"
 
-    def isEdited(self) -> bool:
-        return self.jsres['is_edited'] if 'is_edited' in self.jsres.keys() else "null"
-    
-    def isReply(self) -> bool:
-        return self.jsres['is_reply']
+class ChatType(object):
+    def __init__(self, chat_result) -> None:
+        self.chat_result: dict = chat_result
+        self.keys: list = list(self.chat_result.keys())
+        self.id: str = self.chat_result['object_guid']
+        self.access: list = self.chat_result['access'] if "access" in self.keys else []
+        self.count_unseen: int = self.chat_result['count_unseen'] if "count_unseen" in self.keys else UNKNOWN
+        self.is_mute: Union[bool, UNKNOWN] = self.chat_result['is_mute'] if "is_mute" in self.keys else UNKNOWN
+        self.is_pinned: Union[bool, UNKNOWN] = self.chat_result['is_pinned'] if "is_pinned" in self.keys else UNKNOWN
+        self.status: Union[str, UNKNOWN] = self.chat_result['status'] if "status" in self.keys else UNKNOWN
+        self.avatar: Union[Avatar, UNKNOWN] = Avatar(self.chat_result['abs_object']['avatar_thumbnail']) if "abs_object" in self.keys and "avatar_thumbnail" in self.chat_result['abs_object'].keys() else UNKNOWN
+        self.is_verified: Union[bool, UNKNOWN] = self.chat_result['abs_object']['is_verified'] if "abs_object" in self.keys and "is_verified" in self.chat_result['abs_object'].keys() else UNKNOWN
+        self.is_verified: Union[bool, UNKNOWN] = self.chat_result['abs_object']['is_deleted'] if "abs_object" in self.keys and "is_deleted" in self.chat_result['abs_object'].keys() else UNKNOWN
+        self.is_verified: Union[bool, UNKNOWN] = self.chat_result['is_blocked'] if "is_blocked" in self.keys else UNKNOWN
 
+    def __str__(self):
+        return json.dumps(self.chat_result, indent=2)
+    
+class LastMessageType(object):
+    def __init__(self, message_result) -> None:
+        self.message: Dict = message_result
+        self.message_keys: list = list(self.message.keys())
+        self.message_id: Union[str] = message_result['message_id'] if "message_id" in self.message_keys else ""
+        self.text: Union[str] = message_result['text'] if "text" in self.message_keys else ""
+        self.type: Union[str] = message_result['type'] if "type" in self.message_keys else ""
+        self.author_object_guid: Union[str, UNKNOWN] = message_result['author_object_guid'] if "author_object_guid" in self.message_keys else UNKNOWN
+        self.is_mine: Union[bool, UNKNOWN] = message_result['is_mine'] if "is_mine" in self.message_keys else UNKNOWN
+        self.author_type: Union[str, UNKNOWN] = message_result['author_type'] if "author_type" in self.message_keys else UNKNOWN
+
+    def __str__(self):
+        return json.dumps(self.message, indent=2)
+    
+class AbsObject(object):
+    def __init__(self, abs_result: dict) -> None:
+        self.abs = abs_result
+        self.keys: list = list(self.abs.keys())
+        self.object_guid: Union[str, UNKNOWN] = self.abs['object_guid'] if "object_guid" in self.keys else UNKNOWN
+        self.type: Union[str, UNKNOWN] = self.abs['type'] if "type" in self.keys else UNKNOWN
+        self.first_name: Union[str, UNKNOWN] = self.abs['first_name'] if "first_name" in self.keys else UNKNOWN
+        self.avatar_thumbnail: Union[Avatar, UNKNOWN] = Avatar(self.abs['avatar_thumbnail']) if "avatar_thumbnail" in self.keys else UNKNOWN
+        self.is_verified: Union[bool, UNKNOWN] = self.abs['is_verified'] if "is_verified" in self.keys else UNKNOWN
+        self.is_deleted: Union[bool, UNKNOWN] = self.abs['is_deleted'] if "is_deleted" in self.keys else UNKNOWN
+    
 class XUpdater(object):
+    def __init__(self, Auth, Key, UpdateResult, UseFakeUserAgent: bool = True, Proxy = None) -> None:
+        self.auth = str(Auth)
+        self.key = str(Key)
+        self.UpResult: Dict = UpdateResult
+        self.ufa = UseFakeUserAgent
+        self.proxy = Proxy
+        self.networkClient = XNetwork(self.auth, self.key, self.proxy)
+
+        self.data: Dict = self.UpResult['data'] if "data" in self.UpResult.keys() else {}
+        self.last_chat: Union[Dict] = self.data['chats'][0] if "chats" in self.UpResult.keys() else {}
+        self.chat: Union[ChatType, Dict] = ChatType(self.last_chat) if len(list(self.last_chat.keys())) != 0 else {}
+        self.last_message: Union[LastMessageType, Dict] = LastMessageType(self.last_chat['last_message']) if "last_message" in self.last_chat.keys() else {}
+        self.abs_object: Union[AbsObject, UNKNOWN] = AbsObject(self.last_chat['abs_object']) if "abs_object" in self.last_chat.keys() else UNKNOWN
+        self.message_id: Union[str] = self.last_message.message_id
+        self.text: Union[str] = self.last_message.text
+    
+    def reply(self, text: str, markdown: bool = True):
+        if markdown:
+            metadata = Markdown(text=text).metadata
+
+            metadata['object_guid'] = self.chat.id
+            metadata['reply_to_message_id'] = self.message_id
+            metadata['rnd'] = random.random() * 1e6 + 1
+
+            return self.networkClient.option(metadata, "sendMessage", self.ufa)
+        
+        else:
+            return self.networkClient.option({"object_guid": self.chat.id,
+                                        "text": text,
+                                        "reply_to_message_id": self.message_id,
+                                        "rnd": random.random() * 1e6 + 1})
+
+    def __str__(self):
+        return json.dumps(self.UpResult['data'] if "data" in list(self.UpResult.keys()) else self.UpResult, indent=2)
+
+class OldUpdater(object):
     def __init__(self, Auth, Key, UpdateResult, UseFakeUserAgent: bool = True, Proxy = None) -> None:
         self.auth = str(Auth)
         self.key = str(Key)
@@ -185,11 +393,11 @@ class XUpdater(object):
     
     @property
     def getLastChat(self) -> dict:
-        return self.chats[0] if type(self.data) == dict and "chats" in self.data.keys() else "Null"
+        return self.chats[0] if type(self.data) == dict and "chats" in self.data.keys() and not len(self.chats) == 0 else ""
     
     @property
     def lastChat(self) -> dict:
-        return self.chats[0] if type(self.data) == dict and "chats" in self.data.keys() else "Null"
+        return self.chats[0] if type(self.data) == dict and "chats" in self.data.keys() and not len(self.chats) == 0 else ""
 
     @property
     def newState(self) -> int:
