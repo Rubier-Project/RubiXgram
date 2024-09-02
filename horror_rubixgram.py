@@ -353,7 +353,7 @@ class TextMarkdown(object):
 
 class Client(object):
 
-    __version__ = "6.7.4"
+    __version__ = "6.7.5"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -508,10 +508,10 @@ class Client(object):
         while 1:
             for handler in self.handlers:
                 data = XUpdater(self.authtoken, self.privatekey, self.getChatsUpdates(), self.ufa, self.proxy)
-                if not data.messageId in msgd:
-                    msgd.append(data.messageId)
+                if not data.message_id in msgd:
+                    msgd.append(data.message_id)
                     handler(data)
-                else:msgd.append(data.messageId)
+                else:msgd.append(data.message_id)
 
     def onChatMessage(self, chat_object_guid: str) -> dict:
         try:
@@ -1689,7 +1689,7 @@ class Client(object):
 
 class AsyncClient(object):
 
-    __version__ = "6.7.4"
+    __version__ = "6.7.5"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -1845,10 +1845,10 @@ class AsyncClient(object):
             for handler in self.handlers:
                 chat = await self.getChatsUpdates()
                 data = XUpdater(self.authtoken, self.privatekey, chat, self.ufa, self.proxy)
-                if not data.messageId in msgd:
-                    msgd.append(data.messageId)
+                if not data.message_id in msgd:
+                    msgd.append(data.message_id)
                     await handler(data)
-                else:msgd.append(data.messageId)
+                else:msgd.append(data.message_id)
 
     async def onChatMessage(self, chat_object_guid: str) -> dict:
         try:
