@@ -341,8 +341,8 @@ class XUpdater(object):
         self.chat: Union[ChatType, Dict] = ChatType(self.last_chat) if len(list(self.last_chat.keys())) != 0 else {}
         self.last_message: Union[LastMessageType, Dict] = LastMessageType(self.last_chat['last_message']) if "last_message" in self.last_chat.keys() else {}
         self.abs_object: Union[AbsObject, UNKNOWN] = AbsObject(self.last_chat['abs_object']) if "abs_object" in self.last_chat.keys() else UNKNOWN
-        self.message_id: Union[str] = self.last_message.message_id
-        self.text: Union[str] = self.last_message.text
+        self.message_id: Union[str] = self.last_message.message_id if not self.last_message == {} else ""
+        self.text: Union[str] = self.last_message.text if not self.last_message == {} else ""
     
     def reply(self, text: str, markdown: bool = True):
         if markdown:
