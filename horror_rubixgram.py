@@ -8,7 +8,26 @@ Supporters: @Off_coder - @StreamX
 """
 
 from .network import XNetwork
-from .updater import XUpdater
+from .updater import (
+    XUpdater,
+    FileInline,
+    FileInlineFile,
+    FileInlineGif,
+    FileInlineImage,
+    FileInlineMusic,
+    FileInlineTypes,
+    FileInlineVideo,
+    FileInlineVideoMessage,
+    FileInlineVoice,
+    ForwardedFrom,
+    AbsObject,
+    Avatar,
+    ReplyObjects,
+    ChatType,
+    Contact,
+    Location,
+    LastMessageType
+)
 from .DataParse import Parse
 from .bootloader import *
 from mutagen import mp3, File
