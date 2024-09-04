@@ -14,6 +14,7 @@ import json
 import filetype
 import aiohttp
 import wget
+import os
 
 from urllib3 import PoolManager, ProxyManager
 from .crypto import encryption
@@ -80,6 +81,24 @@ class XNetwork(object):
     
     def getFileName(self, path: str):
         return wget.filename_from_url(path)
+    
+    def getFileFormat(self, path: str):
+        if "/" in path:
+            path = path.split("/")[-1]
+            if "." in path:
+                return path.split(".")[-1]
+            else:return path
+
+        elif "\\" in path:
+            path = path.split("\\")[-1]
+            if "." in path:
+                return path.split(".")[-1]
+            else:return path
+
+        else:
+            if "." in path:
+                return path.split(".")[-1]
+            else:return path
     
     def option(self,
                input_data: dict,
@@ -338,7 +357,11 @@ class XNetwork(object):
 
                 raise TimeoutError("Failed to download the file!")
 
-    async def asyncDownload(self, accessHashRec:str, fileId:str, dcId:str, size:int, chunkSize:int=262143, attempt:int=0, maxAttempts:int=2):
+    async def asyncDownload(self, accessHashRec, fileId, dcId, size, chunkSize:int=262143, attempt:int=0, maxAttempts:int=2):
+        accessHashRec = str(accessHashRec)
+        fileId = str(fileId)
+        dcId = str(dcId)
+        size = str(size)
         headers = {
         "auth": self.newAuth,
         "access-hash-rec": accessHashRec,
@@ -352,24 +375,23 @@ class XNetwork(object):
         "Connection": "Keep-Alive",
         "Content-Type": "application/json",
         "User-Agent": "okhttp/3.12.1"
-    }
+        }
 
         async with aiohttp.ClientSession() as session:
             while attempt <= maxAttempts:
                 try:
                     async with session.post(f"https://messenger{dcId}.iranlms.ir/GetFile.ashx", headers=headers) as response:
                         data = bytearray()
-                        async for chunk in response.content.iter_any(chunkSize):
+                        async for chunk in response.content.iter_any():
                             data.extend(chunk)
-                            if len(data) >= size:
+                            if len(data) >= int(size):
                                 return bytes(data)
                             
-                except Exception:
-                    attempt += 1
-                    print(f"\nError downloading file! (Attempt {attempt}/{maxAttempts})")
-                    continue
+                except Exception as ERROR:
+                    print(f"Error: {ERROR}")
+                    print(f"Attempt ({attempt}/{maxAttempts})")
 
-        session.close()
+        await session.close()
 
         raise TimeoutError("Failed to download the file!")
     

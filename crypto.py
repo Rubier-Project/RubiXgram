@@ -30,7 +30,7 @@ class encryption:
   def decrypt(self, text):
         return crypto.Util.Padding.unpad(AES.new(self.key, AES.MODE_CBC, self.iv).decrypt(base64.urlsafe_b64decode(text.encode('UTF-8'))), AES.block_size).decode('UTF-8') if dbs['use_crypto'] else Crypto.Util.Padding.unpad(AES.new(self.key, AES.MODE_CBC, self.iv).decrypt(base64.urlsafe_b64decode(text.encode('UTF-8'))), AES.block_size).decode('UTF-8')
   def Sign(self, data_enc:str):
-        return base64.b64encode(pkcs1_15.new(self.keypair).sign(crypto.Hash.SHA256.new(data_enc.encode("utf-8")) if dbs['use_crypto'] else crypto.Hash.SHA256.new(data_enc.encode("utf-8")))).decode("utf-8")
+        return base64.b64encode(pkcs1_15.new(self.keypair).sign(crypto.Hash.SHA256.new(data_enc.encode("utf-8")) if dbs['use_crypto'] else Crypto.Hash.SHA256.new(data_enc.encode("utf-8")))).decode("utf-8")
   def decryptRsaOaep(private:str,data_enc:str):
         return crypto.Cipher.PKCS1_OAEP.new(RSA.import_key(private.encode("utf-8"))).decrypt(base64.b64decode(data_enc)).decode("utf-8") if dbs['use_crypto'] else Crypto.Cipher.PKCS1_OAEP.new(RSA.import_key(private.encode("utf-8"))).decrypt(base64.b64decode(data_enc)).decode("utf-8")
   def rsaKey():

@@ -26,15 +26,18 @@ from .updater import (
     ChatType,
     Contact,
     Location,
-    LastMessageType
+    LastMessageType,
+    UNKNOWN
 )
 from .DataParse import Parse
 from .bootloader import *
 from mutagen import mp3, File
 from tempfile import NamedTemporaryFile
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageEnhance
 from bs4 import BeautifulSoup
 from asyncio import run, create_task
+from moviepy.editor import VideoFileClip
+from moviepy.video.fx.all import colorx
 import re
 import time
 import json
@@ -1686,6 +1689,35 @@ class Client(object):
             "search_text": search_text,
             "start_id": start_id
         }, "searchStickers", self.ufa)
+    
+    def lockGroup(
+            self,
+            group_guid: str
+    ) -> dict:
+        try:
+            access: list = self.getGroupDefaultAccess(group_guid)
+            if "SendMessages" in access['data']['access_list']:
+                access['data']['access_list'].remove("SendMessages")
+                data = self.setGroupDefaultAccess(group_guid, access)
+                return data
+            else:return access
+        except Exception as ERROR:
+            {"status": "OK", "status_det": "ERROR", "data": {"group": {"group_guid": group_guid, "access": access}, "did_lock": False, "dev_message": str(ERROR)}}
+
+    def unlockGroup(
+            self,
+            group_guid: str
+    ) -> dict:
+        try:
+            access: list = self.getGroupDefaultAccess(group_guid)
+            if not "SendMessages" in access['data']['access_list']:
+                access['data']['access_list'].append("SendMessages")
+                data = self.setGroupDefaultAccess(group_guid, access)
+                return data
+            else:return access
+        except Exception as ERROR:
+            {"status": "OK", "status_det": "ERROR", "data": {"group": {"group_guid": group_guid, "access": access}, "did_unlock": False, "dev_message": str(ERROR)}}
+
 
 class AsyncClient(object):
 
@@ -2185,10 +2217,10 @@ class AsyncClient(object):
             ) if customThumbInline else None
 
             if not type == "Image":
-                videoData:list = self.getVideoData(uploadData["file"])
+                videoData:list = await self.getVideoData(uploadData["file"])
                 input["file_inline"]["time"] = videoData[2] * 1000
 
-            fileSize:list = self.getImageSize(uploadData["file"]) if type == "Image" else videoData[1]
+            fileSize:list = await self.getImageSize(uploadData["file"]) if type == "Image" else videoData[1]
             input["file_inline"]["width"] = fileSize[0]
             input["file_inline"]["height"] = fileSize[1]
 
@@ -2196,13 +2228,13 @@ class AsyncClient(object):
                 input["file_inline"]["type"] = "Video"
                 input["file_inline"]["is_round"] = True
 
-            input["file_inline"]["thumb_inline"] = customThumbInline or (self.getImageThumbnail(uploadData["file"]) if type == "Image" else videoData[0])
+            input["file_inline"]["thumb_inline"] = customThumbInline or (await self.getImageThumbnail(uploadData["file"]) if type == "Image" else videoData[0])
 
         if type in ["Music", "Voice"]:
-            input["file_inline"]["time"] = (time or self.getVoiceDuration(uploadData["file"])) * (1000 if type == "Voice" else 1)
+            input["file_inline"]["time"] = (time or await self.getVoiceDuration(uploadData["file"])) * (1000 if type == "Voice" else 1)
 
             if type == "Music":
-                input["file_inline"]["music_performer"] = performer or self.getMusicArtist(uploadData["file"])
+                input["file_inline"]["music_performer"] = performer or await self.getMusicArtist(uploadData["file"])
 
 
         return await self.network.asyncOption(
@@ -2243,7 +2275,7 @@ class AsyncClient(object):
             }
         
         except Exception as ERROR:
-            return await {
+            return {
                 "status": "OK",
                 "status_det": "ERROR",
                 "description": str(ERROR)
@@ -3023,6 +3055,35 @@ class AsyncClient(object):
             "search_text": search_text,
             "start_id": start_id
         }, "searchStickers", self.ufa)
+    
+
+    async def lockGroup(
+            self,
+            group_guid: str
+    ) -> dict:
+        try:
+            access: list = await self.getGroupDefaultAccess(group_guid)
+            if "SendMessages" in access['data']['access_list']:
+                access['data']['access_list'].remove("SendMessages")
+                data = await self.setGroupDefaultAccess(group_guid, access)
+                return data
+            else:return access
+        except Exception as ERROR:
+            {"status": "OK", "status_det": "ERROR", "data": {"group": {"group_guid": group_guid, "access": access}, "did_lock": False, "dev_message": str(ERROR)}}
+
+    async def unlockGroup(
+            self,
+            group_guid: str
+    ) -> dict:
+        try:
+            access: list = await self.getGroupDefaultAccess(group_guid)
+            if not "SendMessages" in access['data']['access_list']:
+                access['data']['access_list'].append("SendMessages")
+                data = await self.setGroupDefaultAccess(group_guid, access)
+                return data
+            else:return access
+        except Exception as ERROR:
+            {"status": "OK", "status_det": "ERROR", "data": {"group": {"group_guid": group_guid, "access": access}, "did_unlock": False, "dev_message": str(ERROR)}}
 
 # Hello to you who read source until here :D
 
@@ -3105,9 +3166,30 @@ class RubixToolKit(object):
             with Image.open(image_path) as img:
                 img_resized = img.resize((width, height))
                 img_resized.save(save_path)
-                return {"error": False}
+                return {"error": False, "saved_on": save_path, "size": (width, height)}
         except Exception as ERR_RESIZE:
             return {"error": True, "message": str(ERR_RESIZE)}
+        
+    def resizeGif(self, gif_path: str, save_path: str, width: int, height: int):
+        try:
+            video = VideoFileClip(gif_path)
+            resized_video = video.resize((width, height))
+            resized_video.write_videofile(save_path)
+
+            return {"error": False, "saved_on": save_path, "size": (width, height)}
+        except Exception as ERROR:
+            return {"error": True, "message": str(ERROR)}
+        
+    # def filterDarkGif(gif_path, save_path):
+    #     try:
+    #         video = VideoFileClip(gif_path)
+    #         darked = video.fx(colorx, 0.5)
+    #         darked.write_videofile(save_path, codec="libx264")
+
+    #         return {"error": False, "saved_on": save_path}
+
+    #     except Exception as ERROR:
+    #         return {"error": True, "message": str(ERROR)}
         
     def filterImage(self, image_path: str, save_path: str, mode) -> dict:
         if not os.path.exists(image_path):
@@ -3117,7 +3199,20 @@ class RubixToolKit(object):
             image = Image.open(image_path)
             modded = image.filter(mode)
             modded.save(save_path)
-            return {"error": False}
+            return {"error": False, "saved_on": save_path}
+        except Exception as ERR_FILTER:
+            return {"error": True, "message": str(ERR_FILTER)}
+        
+    def darkImage(self, image_path: str, save_path: str, factor: float = 0.5) -> dict:
+        if not os.path.exists(image_path):
+            raise ValueError(f"Image Does not Exists: {image_path}")
+        
+        try:
+            image = Image.open(image_path)
+            enh = ImageEnhance.Brightness(image)
+            darked = enh.enhance(factor)
+            darked.save(save_path)
+            return {"error": False, "saved_on": save_path}
         except Exception as ERR_FILTER:
             return {"error": True, "message": str(ERR_FILTER)}
         

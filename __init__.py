@@ -1,4 +1,4 @@
-from .horror_rubixgram import ( Client, AsyncClient, AsyncTaskCreator, ReactionsIds, FormattingOptions, XNetwork, XUpdater, Parse,
+from .horror_rubixgram import ( Client, AsyncClient, AsyncTaskCreator, ReactionsIds, FormattingOptions, XNetwork, XUpdater, Parse, RubixToolKit,
                                 FileInline,
                                 FileInlineFile,
                                 FileInlineGif,
@@ -15,4 +15,5 @@ from .horror_rubixgram import ( Client, AsyncClient, AsyncTaskCreator, Reactions
                                 ChatType,
                                 Contact,
                                 Location,
-                                LastMessageType )
+                                LastMessageType,
+                                UNKNOWN )

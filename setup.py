@@ -16,6 +16,7 @@ setup(
           "fake_useragent",
           "rich",
           "Pillow",
+          "wget",
           "bs4",
           "mutagen",
           "urllib3",

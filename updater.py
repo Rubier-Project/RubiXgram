@@ -168,7 +168,7 @@ class FileInline(object):
         self.width: Union[int, UNKNOWN] = self.file['width'] if "width" in self.keys else UNKNOWN
         self.height: Union[int, UNKNOWN] = self.file['height'] if "height" in self.keys else UNKNOWN
         self.time: Union[int, UNKNOWN] = self.file['time'] if "time" in self.keys else UNKNOWN
-        self.size: Union[int, UNKNOWN] = self.file['size'] if "size" in self.size else UNKNOWN
+        self.size: Union[int, UNKNOWN] = self.file['size'] if "size" in self.keys else UNKNOWN
         self.type: Union[str, UNKNOWN] = self.file['type'] if "type" in self.keys else UNKNOWN
         self.is_round: Union[bool, UNKNOWN] = self.file['is_round'] if "is_round" in self.keys else UNKNOWN
         self.is_spoil: Union[bool, UNKNOWN] = self.file['is_spoil'] if "is_spoil" in self.keys else UNKNOWN
@@ -253,7 +253,7 @@ class ReplyObjects(object):
         self.text: Union[str] = self.jsres['text'] if "text" in self.keys else ""
         self.reply_to_message_id: Union[str] = self.jsres['reply_to_message_id'] if "reply_to_message_id" in self.keys else ""
         self.message_time: Union[str, UNKNOWN] = self.jsres['time'] if "time" in self.keys else UNKNOWN
-        self.type: Union[str, UNKNOWN] = self.jsres['type'] if "type" in self.keys else UNKNOWN
+        self.type: Union[str, UNKNOWN] = self.jsres['file_inline']['type'] if "file_inline" in self.jsres.keys() and "type" in self.jsres['file_inline'].keys() else UNKNOWN
         self.author_type: Union[str, UNKNOWN] = self.jsres['author_type'] if "author_type" in self.keys else UNKNOWN
         self.is_allow_transcription: Union[bool, UNKNOWN] = self.jsres['allow_transcription'] if "allow_transcription" in self.keys else UNKNOWN
         self.is_edited: Union[bool, UNKNOWN] = self.jsres['is_edited'] if "is_edited" in self.keys else UNKNOWN
@@ -350,6 +350,28 @@ class XUpdater(object):
         self.author_object_guid: Union[str, UNKNOWN] = self.last_message.author_object_guid
         self.author_title: Union[str, UNKNOWN] = self.last_message.author_title
         self.author_type: Union[str, UNKNOWN] = self.last_message.author_type
+
+    @property
+    def reply_info(self) -> ReplyObjects:
+        replx = self.networkClient.option({"object_guid": self.chat.id, "message_ids": [self.message_id]}, "getMessagesByID")['data']['messages'][0]
+        if not 'reply_to_message_id' in replx.keys():
+            return ReplyObjects({"is_reply": False})
+        else:
+            data = self.networkClient.option({"object_guid": self.chat.id, "message_ids": [replx['reply_to_message_id']]}, "getMessagesByID")['data']['messages'][0]
+            data['is_reply'] = True
+            return ReplyObjects(data)
+        
+    @property
+    async def reply_info_asyncly(self) -> ReplyObjects:
+        replx = await self.networkClient.asyncOption({"object_guid": self.chat.id, "message_ids": [self.message_id]}, "getMessagesByID")
+        replx = replx['data']['messages'][0]
+        if not 'reply_to_message_id' in replx.keys():
+            return ReplyObjects({"is_reply": False})
+        else:
+            data = await self.networkClient.asyncOption({"object_guid": self.chat.id, "message_ids": [replx['reply_to_message_id']]}, "getMessagesByID")
+            data = data['data']['messages'][0]
+            data['is_reply'] = True
+            return ReplyObjects(data)
     
     def reply(self, text: str, markdown: bool = True):
         if markdown:
