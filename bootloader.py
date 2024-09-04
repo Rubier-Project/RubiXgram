@@ -6,7 +6,7 @@ import rich
 rich.print("""[bold][white][+] - Welcome To The Rubi[cyan]X[white]gram
 [white][+] - Coding time : [green]30/8/2024
 [white][+] - [yellow]Developer [white]Library : [red]@StreamX
-[white][+] - Library version : [blue]3.7.4
+[white][+] - Library version : [blue]6.7.6
 [white][+] - Support : [red]@Off_coder [white],[red] @StreamX [white]
 [white][+] - Channel : [blue]https://rubika.ir/RubiXgram1  """)
 def time_loading(duration):

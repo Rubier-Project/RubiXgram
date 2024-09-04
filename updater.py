@@ -304,14 +304,16 @@ class ChatType(object):
     
 class LastMessageType(object):
     def __init__(self, message_result) -> None:
-        self.message: Dict = message_result
+        self.messagex: Dict = message_result
+        self.message: Union[Dict] = self.messagex['last_message'] if "last_message" in self.messagex.keys() else {}
         self.message_keys: list = list(self.message.keys())
-        self.message_id: Union[str] = message_result['message_id'] if "message_id" in self.message_keys else ""
-        self.text: Union[str] = message_result['text'] if "text" in self.message_keys else ""
-        self.type: Union[str] = message_result['type'] if "type" in self.message_keys else ""
-        self.author_object_guid: Union[str, UNKNOWN] = message_result['author_object_guid'] if "author_object_guid" in self.message_keys else UNKNOWN
-        self.is_mine: Union[bool, UNKNOWN] = message_result['is_mine'] if "is_mine" in self.message_keys else UNKNOWN
-        self.author_type: Union[str, UNKNOWN] = message_result['author_type'] if "author_type" in self.message_keys else UNKNOWN
+        self.message_id: Union[str] = self.message['message_id'] if "message_id" in self.message_keys else ""
+        self.text: Union[str] = self.message['text'] if "text" in self.message_keys else ""
+        self.type: Union[str] = self.message['type'] if "type" in self.message_keys else ""
+        self.author_object_guid: Union[str, UNKNOWN] = self.message['author_object_guid'] if "author_object_guid" in self.message_keys else UNKNOWN
+        self.author_title: Union[str, UNKNOWN] = self.message['author_title'] if "author_title" in self.message_keys else UNKNOWN
+        self.author_type: Union[str, UNKNOWN] = self.message['author_type'] if "author_type" in self.message_keys else UNKNOWN
+        self.is_mine: Union[bool, UNKNOWN] = self.message['is_mine'] if "is_mine" in self.message_keys else UNKNOWN
 
     def __str__(self):
         return json.dumps(self.message, indent=2)
@@ -337,12 +339,17 @@ class XUpdater(object):
         self.networkClient = XNetwork(self.auth, self.key, self.proxy)
 
         self.data: Dict = self.UpResult['data'] if "data" in self.UpResult.keys() else {}
-        self.last_chat: Union[Dict] = self.data['chats'][0] if "chats" in self.UpResult.keys() else {}
+        self.on_chat: Union[list] = self.data['chats'] if "chats" in list(self.data.keys()) else {}
+        self.last_chat: Union[Dict] = self.on_chat[0] if len(self.on_chat) != 0 else []
         self.chat: Union[ChatType, Dict] = ChatType(self.last_chat) if len(list(self.last_chat.keys())) != 0 else {}
-        self.last_message: Union[LastMessageType, Dict] = LastMessageType(self.last_chat['last_message']) if "last_message" in self.last_chat.keys() else {}
-        self.abs_object: Union[AbsObject, UNKNOWN] = AbsObject(self.last_chat['abs_object']) if "abs_object" in self.last_chat.keys() else UNKNOWN
+        self.last_message: Union[LastMessageType, Dict] = LastMessageType(self.last_chat) if len(self.last_chat.keys()) != 0 and "last_message" in self.last_chat else {}
+        self.abs_object: Union[AbsObject, UNKNOWN] = AbsObject(self.last_chat['abs_object']) if len(self.last_chat.keys()) != 0 and "abs_object" in self.last_chat else UNKNOWN
         self.message_id: Union[str] = self.last_message.message_id if not self.last_message == {} else ""
         self.text: Union[str] = self.last_message.text if not self.last_message == {} else ""
+        self.is_mine: Union[bool, UNKNOWN] = self.last_message.is_mine
+        self.author_object_guid: Union[str, UNKNOWN] = self.last_message.author_object_guid
+        self.author_title: Union[str, UNKNOWN] = self.last_message.author_title
+        self.author_type: Union[str, UNKNOWN] = self.last_message.author_type
     
     def reply(self, text: str, markdown: bool = True):
         if markdown:
@@ -356,6 +363,22 @@ class XUpdater(object):
         
         else:
             return self.networkClient.option({"object_guid": self.chat.id,
+                                        "text": text,
+                                        "reply_to_message_id": self.message_id,
+                                        "rnd": random.random() * 1e6 + 1})
+        
+    async def replyAsyncly(self, text: str, markdown: bool = True):
+        if markdown:
+            metadata = Markdown(text=text).metadata
+
+            metadata['object_guid'] = self.chat.id
+            metadata['reply_to_message_id'] = self.message_id
+            metadata['rnd'] = random.random() * 1e6 + 1
+
+            return await self.networkClient.asyncOption(metadata, "sendMessage", self.ufa)
+        
+        else:
+            return await self.networkClient.asyncOption({"object_guid": self.chat.id,
                                         "text": text,
                                         "reply_to_message_id": self.message_id,
                                         "rnd": random.random() * 1e6 + 1})
