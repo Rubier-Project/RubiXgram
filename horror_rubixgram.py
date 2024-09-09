@@ -354,7 +354,7 @@ class TextMarkdown(object):
 
 class Client(object):
 
-    __version__ = "6.7.9"
+    __version__ = "6.7.10"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -1719,7 +1719,7 @@ class Client(object):
 
 class AsyncClient(object):
 
-    __version__ = "6.7.9"
+    __version__ = "6.7.10"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -2810,14 +2810,16 @@ class AsyncClient(object):
         return await self.network.asyncOption({
             "from_object_guid": from_object_guid,
             "to_object_guid": to_object_guid,
-            "message_ids": [message_id]
+            "message_ids": [message_id],
+            "rnd": random.random() * 1e6 + 1
         }, "forwardMessages", self.ufa)
     
     async def forwardMessages(self, from_object_guid: str, to_object_guid: str, message_ids: list) -> dict:
         return await self.network.asyncOption({
             "from_object_guid": from_object_guid,
             "to_object_guid": to_object_guid,
-            "message_ids": message_ids
+            "message_ids": message_ids,
+            "rnd": random.random() * 1e6 + 1
         }, "forwardMessages", self.ufa)
     
     async def getMessageLink(self, object_guid: str, message_id: str) -> dict:
