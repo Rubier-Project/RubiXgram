@@ -36,8 +36,6 @@ from tempfile import NamedTemporaryFile
 from PIL import Image, ImageFilter, ImageEnhance
 from bs4 import BeautifulSoup
 from asyncio import run, create_task
-from moviepy.editor import VideoFileClip
-from moviepy.video.fx.all import colorx
 import re
 import time
 import json
@@ -356,7 +354,7 @@ class TextMarkdown(object):
 
 class Client(object):
 
-    __version__ = "6.7.7"
+    __version__ = "6.7.8"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -1721,7 +1719,7 @@ class Client(object):
 
 class AsyncClient(object):
 
-    __version__ = "6.7.7"
+    __version__ = "6.7.8"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -3171,6 +3169,9 @@ class RubixToolKit(object):
             return {"error": True, "message": str(ERR_RESIZE)}
         
     def resizeGif(self, gif_path: str, save_path: str, width: int, height: int):
+        
+        from moviepy.editor import VideoFileClip
+
         try:
             video = VideoFileClip(gif_path)
             resized_video = video.resize((width, height))
@@ -3179,17 +3180,6 @@ class RubixToolKit(object):
             return {"error": False, "saved_on": save_path, "size": (width, height)}
         except Exception as ERROR:
             return {"error": True, "message": str(ERROR)}
-        
-    # def filterDarkGif(gif_path, save_path):
-    #     try:
-    #         video = VideoFileClip(gif_path)
-    #         darked = video.fx(colorx, 0.5)
-    #         darked.write_videofile(save_path, codec="libx264")
-
-    #         return {"error": False, "saved_on": save_path}
-
-    #     except Exception as ERROR:
-    #         return {"error": True, "message": str(ERROR)}
         
     def filterImage(self, image_path: str, save_path: str, mode) -> dict:
         if not os.path.exists(image_path):
