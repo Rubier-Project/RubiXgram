@@ -354,7 +354,7 @@ class TextMarkdown(object):
 
 class Client(object):
 
-    __version__ = "6.7.8"
+    __version__ = "6.7.9"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -717,12 +717,12 @@ class Client(object):
     
     def joinChannelByLink(self, link: str, use_endpoint_hash: bool = True) -> dict:
         return self.network.option({"hash_link": self.endpointHash(link)},
-                                   "joinChannelByLink", self.ufa) if use_endpoint_hash else self.network.option({"hash_link": self.endpointHash(link)},
+                                   "joinChannelByLink", self.ufa) if use_endpoint_hash else self.network.option({"hash_link": link},
                                    "joinChannelByLink", self.ufa)
     
     def joinGroup(self, link: str, use_endpoint_hash: bool = True) -> dict:
         return self.network.option({"hash_link": self.endpointHash(link)},
-                                   "joinGroup", self.ufa) if use_endpoint_hash else self.network.option({"hash_link": self.endpointHash(link)},
+                                   "joinGroup", self.ufa) if use_endpoint_hash else self.network.option({"hash_link": link},
                                    "joinGroup", self.ufa)
     
     def leaveGroup(self, group_guid: str) -> dict:
@@ -1719,7 +1719,7 @@ class Client(object):
 
 class AsyncClient(object):
 
-    __version__ = "6.7.8"
+    __version__ = "6.7.9"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -1936,8 +1936,9 @@ class AsyncClient(object):
         return dbs
 
     async def channelPreviewByJoinLink(self, link: str, use_endpoint_hash: bool = True) -> dict:
-        return await self.network.asyncOption({"hash_link": self.endpointHash(link)},
-                                   "channelPreviewByJoinLink", self.ufa) if use_endpoint_hash else self.network.asyncOption({"hash_link": link},
+        hash_link = await self.endpointHash(link)
+        return await self.network.asyncOption({"hash_link": hash_link},
+                                   "channelPreviewByJoinLink", self.ufa) if use_endpoint_hash else await self.network.asyncOption({"hash_link": link},
                                    "channelPreviewByJoinLink", self.ufa)
     
     async def checkChannelUsername(self, username: str, replace_tag: bool = True) -> dict:
@@ -2082,13 +2083,15 @@ class AsyncClient(object):
         return await self.network.asyncOption({"channel_guid": channel_guid, "action": action}, "joinChannelAction", self.ufa)
     
     async def joinChannelByLink(self, link: str, use_endpoint_hash: bool = True) -> dict:
-        return await self.network.asyncOption({"hash_link": self.endpointHash(link)},
-                                   "joinChannelByLink", self.ufa) if use_endpoint_hash else self.network.asyncOption({"hash_link": self.endpointHash(link)},
+        hash_link = await self.endpointHash(link)
+        return await self.network.asyncOption({"hash_link": hash_link},
+                                   "joinChannelByLink", self.ufa) if use_endpoint_hash else await self.network.asyncOption({"hash_link": link},
                                    "joinChannelByLink", self.ufa)
     
     async def joinGroup(self, link: str, use_endpoint_hash: bool = True) -> dict:
-        return await self.network.asyncOption({"hash_link": self.endpointHash(link)},
-                                   "joinGroup", self.ufa) if use_endpoint_hash else self.network.asyncOption({"hash_link": self.endpointHash(link)},
+        hash_link =await  self.endpointHash(link)
+        return await self.network.asyncOption({"hash_link": hash_link},
+                                   "joinGroup", self.ufa) if use_endpoint_hash else await self.network.asyncOption({"hash_link": link},
                                    "joinGroup", self.ufa)
     
     async def leaveGroup(self, group_guid: str) -> dict:
@@ -2636,8 +2639,9 @@ class AsyncClient(object):
         return await self.network.asyncOption({"group_guid": group_guid, "voice_chat_id": voice_chat_id, "state": round(time.time()) - 150}, "getGroupVoiceChatUpdates", self.ufa)
     
     async def groupPreviewByJoinLink(self, link: str, use_endpoint_hash: bool = True) -> dict:
-        return await self.network.asyncOption({"hash_link": self.endpointHash(link)}, "groupPreviewByJoinLink", self.ufa) if use_endpoint_hash else \
-               self.network.asyncOption({"hash_link": link}, "groupPreviewByJoinLink", self.ufa)
+        hash_link = await self.endpointHash(link)
+        return await self.network.asyncOption({"hash_link": hash_link}, "groupPreviewByJoinLink", self.ufa) if use_endpoint_hash else \
+               await self.network.asyncOption({"hash_link": link}, "groupPreviewByJoinLink", self.ufa)
     
     async def leaveGroupVoiceChat(self, group_guid: str, voice_chat_id: str) -> dict:
         return await self.network.asyncOption({"group_guid": group_guid, "voice_chat_id": voice_chat_id}, "leaveGroupVoiceChat", self.ufa)
