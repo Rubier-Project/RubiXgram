@@ -31,6 +31,7 @@ from .updater import (
 )
 from .DataParse import Parse
 from .bootloader import *
+from rich.traceback import install
 from mutagen import mp3, File
 from tempfile import NamedTemporaryFile
 from PIL import Image, ImageFilter, ImageEnhance
@@ -46,6 +47,9 @@ import io
 import os
 import base64
 import typing
+
+# Colorful Traceback
+install()
 
 class ReactionsIds(object):
     RED_HEART = 1
@@ -354,7 +358,7 @@ class TextMarkdown(object):
 
 class Client(object):
 
-    __version__ = "6.7.11"
+    __version__ = "6.7.13"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -1721,7 +1725,7 @@ class Client(object):
 
 class AsyncClient(object):
 
-    __version__ = "6.7.11"
+    __version__ = "6.7.13"
     __github__ = "https://github.com/Rubier-Project/RubiXgram"
 
     def __init__(self, AuthToken: str, PrivateKey: str, UseFakeUserAgent: bool = True, Proxy = None):
@@ -2079,7 +2083,7 @@ class AsyncClient(object):
         )
     
     async def joinChannelAction(self, channel_guid: str, action: str) -> dict:
-        if not action in self.join_channel_actions:
+        if not action in await self.join_channel_actions:
             raise ValueError("`action` parameter in joinChannelAction does not available, to see more actions print `join_channel_actions` property")
         
         return await self.network.asyncOption({"channel_guid": channel_guid, "action": action}, "joinChannelAction", self.ufa)
@@ -2141,7 +2145,7 @@ class AsyncClient(object):
         )
     
     async def setGroupAdmin(self, group_guid: str, member_guid: str, action: str = "SetAdmin", access_list: list = []) -> dict:
-        if not action in self.group_admins_actions:
+        if not action in await self.group_admins_actions:
             raise ValueError("`action` parameter in ( setGroupAdmin / addGroupAdmin ) functions, is not available, to see more actions print `group_admins_actions` property")
         
         if type(access_list) != list and type(access_list) == str:
@@ -2472,7 +2476,7 @@ class AsyncClient(object):
         return ('Mute', 'Unmute')
 
     async def setActionChat(self, object_guid: str, action: str = "Mute") -> dict:
-        if not action in self.chat_actions:
+        if not action in await self.chat_actions:
             raise ValueError("`action` parameter does not available in setActionChat, to see more options print `chat_actions` property")
         
         return await self.network.asyncOption({"object_guid": object_guid, "action": action}, "setActionChat", self.ufa)
@@ -2733,7 +2737,7 @@ class AsyncClient(object):
         )
 
     async def actionOnMessageReaction(self, object_guid: str, message_id: str, reaction_id: int = None, action: str = "Add") -> dict:
-        if not action in self.on_message_reaction_actions:
+        if not action in await self.on_message_reaction_actions:
             raise ValueError(f"The action '{action}' of method `actionOnMessageReaction` is not allow to use, \
                              for see More actions, print `on_message_reaction_actions` property")
         

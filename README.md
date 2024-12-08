@@ -1,7 +1,6 @@
 # RubiXgram
 Client for Rubika Messenger
 
-
 # Explain
 
 RubiXgram is a Project for Rubika Client Handler
